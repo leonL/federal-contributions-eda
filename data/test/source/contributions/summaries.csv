@@ -1,0 +1,3 @@
+"party_name","federal_contribution","riding.name","riding.id","year","total_contributions","total_contributions.over_200","total_contributions.200_or_less","total_contributions.20_or_less","n_contributors","n_contributors.over_200","n_contributors.200_or_less","n_contributors.20_or_less"
+"Liberal Party of Canada",TRUE,NA,NA,"2004",47193,35730,11463,0,174,4678,12751,0
+"Liberal Party of Canada",TRUE,NA,NA,"2005",47193,35730,11463,0,174,4678,12751,300
