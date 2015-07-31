@@ -46,7 +46,7 @@ with(io, {
     read.csv(file, as.is=TRUE, encoding="UTF-8")
   }
 
-  read_contributions_csv <- function() {
+  get_contributions_csv <- function() {
     if (is.null(contributions_csv)) {
       contributions_csv <<-
         read_src_csv(k$src_data_file_names['contributions'], 'contributions')

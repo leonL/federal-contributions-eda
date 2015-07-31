@@ -4,7 +4,7 @@ source('config.R')
 context('sub_sets')
 
 test_that('filter_donee_type returns the expected subset', {
-  df <- io$read_contributions_csv()
+  df <- io$get_contributions_csv()
   result <- sub_sets$filter_donee_type(df, TRUE)
   expect_equal(result$id, c(1, 2))
 })

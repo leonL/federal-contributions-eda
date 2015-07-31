@@ -15,7 +15,7 @@ with(party_donations, {
 
   all <- function() {
     if (is.null(all_donations)) {
-      set <- io$read_contributions_csv()
+      set <- io$get_contributions_csv()
       all_donations <<- filter_donee_type(set)
     }
     all_donations
