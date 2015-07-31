@@ -58,17 +58,23 @@ with(io, {
     if (is.null(contributions_csv)) {
       contributions_csv <<-
         read_src_csv(k$src_data_file_names['contributions'], 'contributions')
-    } else {
-      test$text('cache')
-    }
+    } else { test$text('cache') }
     return(contributions_csv)
   }; contributions_csv <- NULL
 
-  get_eda_shp_file <- function() {
-    read_src_ogr('ElectoralDistrictBoundaries', 'map_boundaries/electoral_districts')
-  }
+  get_riding_shps <- function() {
+    if (is.null(riding_shps)) {
+      riding_shps <<-
+        read_src_ogr('ElectoralDistrictBoundaries', 'map_boundaries/electoral_districts')
+    } else { test$text('cache') }
+    invisible(riding_shps)
+  }; riding_shps <- NULL
 
 })
+
+# Utility functions
+
+util <- new.env()
 
 # Unit Test Helpers
 

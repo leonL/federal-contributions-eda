@@ -1,16 +1,10 @@
 source('base.R')
 
+library(plyr, quietly=TRUE, warn.conflicts=FALSE)
 library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
+library(leaflet, quietly=TRUE, warn.conflicts=FALSE)
 
-sub_sets <- new.env()
-with(sub_sets, {
-
-  filter_donee_type <- function(df, riding_level = FALSE) {
-    filter(df, donee.riding_level==riding_level)
-  }
-})
-
-party_donations <- new.env(parent=sub_sets)
+party_donations <- new.env(parent=util)
 with(party_donations, {
 
   all <- function() {
@@ -23,13 +17,13 @@ with(party_donations, {
 
   donor_totals_by_year_party <- function() {
     smry <- group_by(all(), contributor_id, party, contrib.year) %>%
-      summarize(contrib.total=sum(contrib.amount), contrib.max=max(contrib.amount))
+      dplyr::summarise(contrib.total=sum(contrib.amount), contrib.max=max(contrib.amount))
     as.data.frame(smry)
   }
 
-  riding_totals_by_year_party <- function(party, year) {
+  riding_totals_by_year_party <- function() {
     smry <- group_by(all(), contributor.riding_id, party, contrib.year) %>%
-      summarize(contrib.total=sum(contrib.amount), contrib.n=n_distinct(contributor_id))
+      dplyr::summarise(contrib.total=sum(contrib.amount), contrib.n=n_distinct(contributor_id))
     as.data.frame(smry)
   }
 
@@ -39,4 +33,33 @@ with(party_donations, {
   }
 })
 
-riding_donations <- new.env(parent=sub_sets)
+lft_plots <- new.env(parent=util)
+with(lft_plots, {
+
+  riding_shps_with_totals_for_year_party <- function(year, party_name) {
+    shps <- io$get_riding_shps()
+    totals <- party_donations$riding_totals_for_year_party(year, party_name) %>%
+      rename(FEDUID=contributor.riding_id)
+    shps@data <- join(shps@data, totals)
+    shps@data[is.na(shps@data)] <- 0
+    invisible(shps)
+  }
+
+  map_total_for_year_party_by_riding <- function(year, party_name) {
+    sp_data <- riding_shps_with_totals_for_year_party(year, party_name)
+    pal <- colorNumeric(palette = 'Oranges', domain = sp_data$contrib.total)
+    map <- leaflet(sp_data) %>% addTiles() %>%
+      addPolygons(stroke = FALSE,
+                  fillOpacity = 0.7,
+                  smoothFactor = 0.5,
+                  fillColor = ~pal(contrib.total))
+    return(map)
+  }
+})
+
+with(util, {
+
+  filter_donee_type <- function(df, riding_level = FALSE) {
+    filter(df, donee.riding_level==riding_level)
+  }
+})
