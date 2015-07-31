@@ -1,3 +1,5 @@
+library(rgdal, quietly=TRUE, warn.conflicts=FALSE)
+
 # Constants & Config
 
 if (!exists("k")) { k <- new.env() }
@@ -46,6 +48,12 @@ with(io, {
     read.csv(file, as.is=TRUE, encoding="UTF-8")
   }
 
+  read_src_ogr <- function(filename, subfolder) {
+    path <- paste(k$data_src_path(), subfolder, sep = '/')
+    flog.info("Reading %s/%s ...", path, filename)
+    readOGR(path, filename, stringsAsFactors = FALSE)
+  }
+
   get_contributions_csv <- function() {
     if (is.null(contributions_csv)) {
       contributions_csv <<-
@@ -55,6 +63,10 @@ with(io, {
     }
     return(contributions_csv)
   }; contributions_csv <- NULL
+
+  get_eda_shp_file <- function() {
+    read_src_ogr('ElectoralDistrictBoundaries', 'map_boundaries/electoral_districts')
+  }
 
 })
 
