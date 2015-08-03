@@ -15,15 +15,16 @@ with(party_donations, {
     all_donations
   }; all_donations <- NULL
 
-  donor_totals_by_year_party <- function() {
-    smry <- group_by(all(), contributor_id, party, contrib.year) %>%
-      dplyr::summarise(contrib.total=sum(contrib.amount), contrib.max=max(contrib.amount))
+  donor_smry_by_year_party <- function() {
+    smry <- group_by(all(), contributor_id, contributor.riding_id, party, contrib.year) %>%
+      summarise(contrib.total = sum(contrib.amount), contrib.max = max(contrib.amount),
+                  contrib.bracket = classify_donation_totals(contrib.total))
     as.data.frame(smry)
   }
 
   riding_totals_by_year_party <- function() {
     smry <- group_by(all(), contributor.riding_id, party, contrib.year) %>%
-      dplyr::summarise(contrib.total=sum(contrib.amount), contrib.n=n_distinct(contributor_id))
+      summarise(contrib.total = sum(contrib.amount), contrib.n = n_distinct(contributor_id))
     as.data.frame(smry)
   }
 
@@ -61,5 +62,15 @@ with(util, {
 
   filter_donee_type <- function(df, riding_level = FALSE) {
     filter(df, donee.riding_level==riding_level)
+  }
+
+  classify_donation_totals <- function(totals) {
+    chr <- vector(mode="character", length=length(totals))
+    chr[totals > 200 & totals < 300] <- 'C'
+    chr[totals >= 300 & totals < 400] <- 'D'
+    chr[totals >= 400 & totals < 600] <- 'E'
+    chr[totals >= 600] <- 'F'
+    chr[totals <= 200] <- NA
+    return(chr)
   }
 })

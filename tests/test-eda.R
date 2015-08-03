@@ -9,6 +9,11 @@ test_that('filter_donee_type returns the expected subset', {
   expect_equal(result$id, c(1, 2))
 })
 
+test_that('classify_donation_totals returns the correct bracket codes', {
+  result <- util$classify_donation_totals(c(200, 200.01, 300, 399.99, 420, 599, 600, 1000000))
+  expect_equal(result, c(NA, 'C', 'D', 'D', 'E', 'E', 'F', 'F'))
+})
+
 context('party_donations')
 
 test_that('all returns only the donations given directly to parties', {
@@ -16,10 +21,11 @@ test_that('all returns only the donations given directly to parties', {
   expect_false(any(c(1, 2) %in% result$id))
 })
 
-test_that('donor_totals_by_year_party returns expected totals', {
-  result <- party_donations$donor_totals_by_year_party()
-  result <- filter(result, party == 'Conservative', contributor_id == 256200)
-  expect_equal(result$contrib.total, 200)
+test_that('donor_smry_by_year_party returns expected totals', {
+  result <- party_donations$donor_smry_by_year_party()
+  result <- filter(result, party == 'Conservative', contributor_id == 1)
+  expect_equal(result$contrib.total, 1100)
+  expect_equal(result$contrib.bracket, 'F')
 })
 
 test_that('riding_totals_by_year_party returns expected totals', {
