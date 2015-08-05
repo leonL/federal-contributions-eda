@@ -28,32 +28,62 @@ with(party_donations, {
     as.data.frame(smry)
   }
 
+  riding_totals_by_year_bracket <- function() {
+    smry <- group_by(donor_smry_by_year_party(),
+              contributor.riding_id, contrib.year, contrib.bracket) %>%
+              summarise(contrib.total = sum(contrib.total), contrib.n = n_distinct(contributor_id))
+    as.data.frame(smry)
+  }
+
+  riding_totals_by_year_party_bracket <- function() {
+    smry <- group_by(donor_smry_by_year_party(),
+              contributor.riding_id, party, contrib.year, contrib.bracket) %>%
+              summarise(contrib.total = sum(contrib.total), contrib.n = n_distinct(contributor_id))
+    as.data.frame(smry)
+  }
+
   riding_totals_for_year_party <- function(year, party_name) {
     filter(riding_totals_by_year_party(), contrib.year == year, party == party_name) %>%
       select(-party, -contrib.year)
   }
+
+  riding_totals_for_year_bracket <- function(year, bracket) {
+    filter(riding_totals_by_year_bracket(),
+            contrib.year == year, contrib.bracket == bracket) %>%
+      select(-contrib.year, -contrib.bracket)
+  }
+
+  riding_totals_for_year_party_bracket <- function(year, party_name, bracket) {
+    filter(riding_totals_by_year_party_bracket(),
+            contrib.year == year, party == party_name, contrib.bracket == bracket) %>%
+      select(-party, -contrib.year, -contrib.bracket)
+  }
 })
 
-lft_plots <- new.env(parent=util)
-with(lft_plots, {
+lflt_plots <- new.env(parent=util)
+with(lflt_plots, {
 
-  riding_shps_with_totals_for_year_party <- function(year, party_name) {
+  riding_shps_with_data <- function(riding_data) {
     shps <- io$get_riding_shps()
-    totals <- party_donations$riding_totals_for_year_party(year, party_name) %>%
-      rename(FEDUID=contributor.riding_id)
-    shps@data <- join(shps@data, totals)
+    shps@data <- join(shps@data, riding_data)
     shps@data[is.na(shps@data)] <- 0
     invisible(shps)
   }
 
-  map_total_for_year_party_by_riding <- function(year, party_name) {
-    sp_data <- riding_shps_with_totals_for_year_party(year, party_name)
-    pal <- colorNumeric(palette = 'Oranges', domain = sp_data$contrib.total)
+  # pal <- function() {
+  #   colorNumeric(palette = 'Blues', domain = party_donations$riding_totals_by_year_bracket()[['contrib.n']])
+  # }
+
+  riding_choropleth_map <- function(riding_data, col, p) {
+    sp_data <- riding_shps_with_data(riding_data)
+    # pal <- colorNumeric(palette = 'Oranges', domain = sp_data[[col]])
     map <- leaflet(sp_data) %>% addTiles() %>%
-      addPolygons(stroke = FALSE,
+      addPolygons(stroke = TRUE,
+                  weight = 1,
+                  color = 'black',
                   fillOpacity = 0.7,
                   smoothFactor = 0.5,
-                  fillColor = ~pal(contrib.total))
+                  fillColor = ~p(sp_data[[col]]))
     return(map)
   }
 })
