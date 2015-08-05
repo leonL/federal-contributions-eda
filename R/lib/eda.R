@@ -9,7 +9,7 @@ with(party_donations, {
 
   all <- function() {
     if (is.null(all_donations)) {
-      set <- io$get_contributions_csv()
+      set <- get_contributions_csv()
       all_donations <<- filter_donee_type(set)
     }
     all_donations
@@ -60,19 +60,19 @@ with(party_donations, {
   }
 })
 
-lflt_plots <- new.env(parent=util)
+lflt_plots <- new.env(parent=party_donations)
 with(lflt_plots, {
 
   riding_shps_with_data <- function(riding_data) {
-    shps <- io$get_riding_shps()
+    shps <- get_riding_shps()
     shps@data <- join(shps@data, riding_data)
     shps@data[is.na(shps@data)] <- 0
     invisible(shps)
   }
 
-  # pal <- function() {
-  #   colorNumeric(palette = 'Blues', domain = party_donations$riding_totals_by_year_bracket()[['contrib.n']])
-  # }
+  pal <- function() {
+    colorNumeric(palette = 'Blues', domain = riding_totals_by_year_bracket()[['contrib.']])
+  }
 
   riding_choropleth_map <- function(riding_data, col, p) {
     sp_data <- riding_shps_with_data(riding_data)

@@ -39,7 +39,7 @@ with(k, {
 
 # Input & Output helpers
 
-if (!exists("io")) { io <- new.env() }
+if (!exists("io")) { io <- new.env(parent=k) }
 with(io, {
 
   read_src_csv <- function(filename, subfolder) {
@@ -74,7 +74,7 @@ with(io, {
 
 # Utility functions
 
-util <- new.env()
+util <- new.env(parent=io)
 
 # Unit Test Helpers
 
