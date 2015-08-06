@@ -14,11 +14,22 @@ test_that('classify_donation_totals returns the correct bracket codes', {
   expect_equal(result, c(NA, 'C', 'D', 'D', 'E', 'E', 'F', 'F'))
 })
 
+test_that('map_summary_count_labels_to_bracket_codes returns a valid mapping', {
+  v <- c('abc.200_or_less', 'xxx.20_or_less', 'yyy.200_or_less')
+  result <- util$map_summary_count_labels_to_bracket_codes(v)
+  expect_equal(result, c('B', 'A', 'B'))
+})
+
 context('party_donations')
 
 test_that('all returns only the donations given directly to parties', {
   result <- party_donations$all()
   expect_false(any(c(1, 2) %in% result$id))
+})
+
+test_that('summaries expresses the monetary values in dollars', {
+  result <- party_donations$summaries()
+  expect_equal(result[1, 'total_contributions'], 1000.27)
 })
 
 test_that('donor_smry_by_year_party returns expected totals', {
@@ -54,6 +65,18 @@ test_that('riding_totals_for_year_party_bracket returns a correctly filtered sub
   result <- party_donations$riding_totals_for_year_party_bracket(2011, 'Conservative', 'F')
   expect_equal(result$contrib.n, 2)
   expect_equal(result$contrib.total, 2200)
+})
+
+test_that('summary_grand_totals_by_bracket_party_year returns the correct totals by bracket', {
+  result <- party_donations$summary_grand_totals_by_bracket_party_year()
+  result_2004_lib_B <- filter(result, year == 2004, bracket == 'B', party_name == "Liberal Party of Canada")
+  expect_equal(result_2004_lib_B$n_contributors, 50)
+})
+
+test_that('summary_grand_totals_by_year returns expected summary', {
+  result <- party_donations$summary_grand_totals_by_year()
+  result_2004 <- filter(result, year == 2004)
+  expect_equal(result_2004$grand.total_contributions, 1220.39)
 })
 
 context('lflt_plots')

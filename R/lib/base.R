@@ -57,10 +57,18 @@ with(io, {
   get_contributions_csv <- function() {
     if (is.null(contributions_csv)) {
       contributions_csv <<-
-        read_src_csv(k$src_data_file_names['contributions'], 'contributions')
+        read_src_csv(src_data_file_names['contributions'], 'contributions')
     } else { test$text('cache') }
     return(contributions_csv)
   }; contributions_csv <- NULL
+
+  get_summaries_csv <- function() {
+    if (is.null(summaries_csv)) {
+      summaries_csv <<-
+        read_src_csv('summaries.csv', 'contributions')
+    } else { test$text('cache') }
+    return(summaries_csv)
+  }; summaries_csv <- NULL
 
   get_riding_shps <- function() {
     if (is.null(riding_shps)) {

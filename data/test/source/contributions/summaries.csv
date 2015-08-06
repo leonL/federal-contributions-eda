@@ -1,3 +1,5 @@
 "party_name","federal_contribution","riding.name","riding.id","year","total_contributions","total_contributions.over_200","total_contributions.200_or_less","total_contributions.20_or_less","n_contributors","n_contributors.over_200","n_contributors.200_or_less","n_contributors.20_or_less"
-"Liberal Party of Canada",TRUE,NA,NA,"2004",47193,35730,11463,0,174,4678,12751,0
-"Liberal Party of Canada",TRUE,NA,NA,"2005",47193,35730,11463,0,174,4678,12751,300
+"Liberal Party of Canada",TRUE,NA,NA,"2004",100027,50000,150000,0,100,50,50,0
+"Liberal Party of Canada",TRUE,NA,NA,"2005",200031,50000,250000,0,200,25,150,25
+"Bloc Québécois",TRUE,NA,NA,"2004",22012,31873990,54000568,0,8775,735,8040,0
+"Bloc Québécois",FALSE,"Lotbinière—Chutes-de-la-Chaudière",24036,"2006",1394065,1052465,242500,99100,87,8,31,48
