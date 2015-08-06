@@ -3,6 +3,18 @@ source('config.R')
 
 context('util')
 
+test_that('init_summaries_df returns monetray values in dollars', {
+  result <- util$init_summaries_df()
+  result_id1 <- filter(result, id == 1)
+  expect_equal(result_id1$total_contributions, 1000.27)
+})
+
+test_that('init_long_summaries_df returns correctly transposed summary data', {
+  result <- util$init_long_summaries_df()
+  result_2004_lib_B <- filter(result, contrib.year == 2004, contrib.bracket == 'B', party == "Liberal", !donee.riding_level)
+  expect_equal(result_2004_lib_B$n_contributors, 50)
+})
+
 test_that('filter_donee_type returns the expected subset', {
   df <- io$get_contributions_csv()
   result <- util$filter_donee_type(df, TRUE)
@@ -27,9 +39,14 @@ test_that('all returns only the donations given directly to parties', {
   expect_false(any(c(1, 2) %in% result$id))
 })
 
-test_that('summaries expresses the monetary values in dollars', {
+test_that('summaries returns only those for donations to parties', {
   result <- party_donations$summaries()
-  expect_equal(result[1, 'total_contributions'], 1000.27)
+  expect_false(4 %in% result$id)
+})
+
+test_that('summaries_long returns only those for donations to parties', {
+  result <- party_donations$summaries_long()
+  expect_false(4 %in% result$id)
 })
 
 test_that('donor_smry_by_year_party returns expected totals', {
@@ -67,16 +84,18 @@ test_that('riding_totals_for_year_party_bracket returns a correctly filtered sub
   expect_equal(result$contrib.total, 2200)
 })
 
-test_that('summary_grand_totals_by_bracket_party_year returns the correct totals by bracket', {
-  result <- party_donations$summary_grand_totals_by_bracket_party_year()
-  result_2004_lib_B <- filter(result, year == 2004, bracket == 'B', party_name == "Liberal Party of Canada")
-  expect_equal(result_2004_lib_B$n_contributors, 50)
+context('party_grand_totals')
+
+test_that('by_year returns expected summary', {
+  result <- party_grand_totals$by_year()
+  result_2004 <- filter(result, contrib.year == 2004)
+  expect_equal(result_2004$grand.total_contributions, 1220.39)
 })
 
-test_that('summary_grand_totals_by_year returns expected summary', {
-  result <- party_donations$summary_grand_totals_by_year()
-  result_2004 <- filter(result, year == 2004)
-  expect_equal(result_2004$grand.total_contributions, 1220.39)
+test_that('for_onymous_brackets_by_party_year returns the expected summary', {
+  result <- party_grand_totals$for_onymous_brackets_by_party_year()
+  result_NDP_2014_F <- filter(result, party == 'NDP', contrib.year == 2014, contrib.bracket == 'F')
+  expect_equal(result_NDP_2014_F$total_contributions, 2100)
 })
 
 context('lflt_plots')
