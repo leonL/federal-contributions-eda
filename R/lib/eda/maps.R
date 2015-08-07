@@ -8,13 +8,12 @@ with(lflt_plots, {
     invisible(shps)
   }
 
-  pal <- function() {
-    colorNumeric(palette = 'Blues', domain = riding_totals_by_year_bracket()[['contrib.']])
+  pal <- function(colour, vec) {
+    colorNumeric(palette = colour, domain = c(0, max(vec)))
   }
 
   riding_choropleth_map <- function(riding_data, col, p) {
     sp_data <- riding_shps_with_data(riding_data)
-    # pal <- colorNumeric(palette = 'Oranges', domain = sp_data[[col]])
     map <- leaflet(sp_data) %>% addTiles() %>%
       addPolygons(stroke = TRUE,
                   weight = 1,
