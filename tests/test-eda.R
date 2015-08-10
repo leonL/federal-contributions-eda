@@ -98,6 +98,12 @@ test_that('for_onymous_brackets_by_party_year returns the expected summary', {
   expect_equal(result_NDP_2014_F$total_contributions, 2100)
 })
 
+test_that('for_onymous_by_party_year_from_individual_contirbs returns the expected summary', {
+  result <- party_totals$for_onymous_by_party_year_from_individual_contirbs()
+  result_NDP_2014 <- filter(result, party == 'NDP', contrib.year == 2014)
+  expect_equal(result_NDP_2014$n_contributors, 2)
+})
+
 context('lflt_plots')
 
 test_that('riding_shps_with data returns a SpatialPolygonsDataFrame with coorect totals', {

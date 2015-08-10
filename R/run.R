@@ -2,6 +2,9 @@ source('lib/eda.R', chdir=TRUE)
 
 library(ggplot2)
 
+# summary and aggregated totals comparison table
+comparison_df <- party_totals$summary_to_individ_comparison_table()
+
 # stacked area charts of grand totals by brackets (faceted by party)
 bracket_totals <- party_totals$for_brackets_by_party_year()
 bracket_totals <- filter(bracket_totals, contrib.year != 2015) %>% arrange(contrib.bracket)
