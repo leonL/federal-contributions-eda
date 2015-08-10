@@ -84,16 +84,16 @@ test_that('riding_totals_for_year_party_bracket returns a correctly filtered sub
   expect_equal(result$contrib.total, 2200)
 })
 
-context('party_grand_totals')
+context('party_totals')
 
 test_that('by_year returns expected summary', {
-  result <- party_grand_totals$by_year()
+  result <- party_totals$by_year()
   result_2004 <- filter(result, contrib.year == 2004)
   expect_equal(result_2004$grand.total_contributions, 1220.39)
 })
 
 test_that('for_onymous_brackets_by_party_year returns the expected summary', {
-  result <- party_grand_totals$for_onymous_brackets_by_party_year()
+  result <- party_totals$for_onymous_brackets_by_party_year()
   result_NDP_2014_F <- filter(result, party == 'NDP', contrib.year == 2014, contrib.bracket == 'F')
   expect_equal(result_NDP_2014_F$total_contributions, 2100)
 })

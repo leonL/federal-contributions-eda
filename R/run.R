@@ -3,7 +3,7 @@ source('lib/eda.R', chdir=TRUE)
 library(ggplot2)
 
 # stacked area charts of grand totals by brackets (faceted by party)
-bracket_totals <- party_grand_totals$for_brackets_by_party_year()
+bracket_totals <- party_totals$for_brackets_by_party_year()
 bracket_totals <- filter(bracket_totals, contrib.year != 2015) %>% arrange(contrib.bracket)
 ggplot(bracket_totals, aes(x=contrib.year, y=total_contributions, fill=contrib.bracket)) + geom_area() + facet_grid(. ~ party)
 ggplot(bracket_totals, aes(x=contrib.year, y=n_contributors, fill=contrib.bracket)) + geom_area() + facet_grid(. ~ party)

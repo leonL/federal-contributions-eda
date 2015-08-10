@@ -78,5 +78,5 @@ with(party_donations, {
   }
 })
 
-source('eda/party_grand_totals.R')
+source('eda/party_totals.R')
 source('eda/maps.R')

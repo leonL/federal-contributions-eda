@@ -1,5 +1,13 @@
-party_grand_totals <- new.env(parent=party_donations)
-with(party_grand_totals, {
+party_totals <- new.env(parent=party_donations)
+with(party_totals, {
+
+  for_onymous_by_party_year_from_summary <- function() {
+    select(summaries(), party, contrib.year, n_contributors.over_200, total_contributions.over_)
+  }
+
+  for_onymous_by_party_year_from_individual_contirbs <- function() {
+
+  }
 
   for_onymous_brackets_by_party_year <- function() {
     set <- group_by(donor_smry_by_year_party(), contrib.bracket, party, contrib.year) %>%
